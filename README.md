@@ -11,3 +11,5 @@ Backbone, Underscore and Mustache for Javascript interactions.
 Audio link sources are from the Wikipedia.
 
 Audio works only for browsers supporting OGG audio format and the audio tag
+
+It uses the native Drag and Drop API from HTML5 
