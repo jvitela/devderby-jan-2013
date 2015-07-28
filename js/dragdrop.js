@@ -1,16 +1,27 @@
 (function($) {
 
-	var DragDropData = {};
-	var DragSource = {};
+  var DragDropStore = {
+    id:       null,
+    data:     null,
+    source:   null,
+    transfer: null,
 
-	function getDtaTransfer ( event ) {
-		if( event.originalEvent ) {
-			event = event.originalEvent;
-		}
-		return event.dataTransfer;
-	}
+    init: function(id, event) {
+      this.id       = id;
+      this.transfer = this.getDataTransfer(event); 
+      this.transfer.setData('text', this.id);
+      return this;
+    },
 
-	var Draggable = function (element, options) {
+    getDataTransfer: function(event) {
+      if (event.originalEvent) {
+        event = event.originalEvent;
+      }
+      return event.dataTransfer;
+    }
+  };
+
+	var Draggable = function(element, options) {
 		this.options = options;
 		this.el  = element;
 		this.$el = $(element);
@@ -24,38 +35,35 @@
 	Draggable.prototype = {
 		constructor: Draggable,
 
-		onDragStart: function ( event ) {
-			var dt   = getDtaTransfer(event);
-			var opts = this.options;
-			var id 	 = opts.id;
+		onDragStart: function(event) {
+			var opts = this.options,
+		      id 	 = opts.id;
 
 			this.$el.addClass("drag-start");
 			// it is required to set some data, otherwise doesn't work
-			dt.setData("text", id); 
-			dt.effectAllowed = opts.effectAllowed;
+			DragDropStore.init(id, event);
+			DragDropStore.source = this.el;
+			DragDropStore.data = this.options.data;
+			DragDropStore.transfer.effectAllowed = opts.effectAllowed;
 
-			if( this.options.dragImage && dt.setDragImage ) {
-				dt.setDragImage( this.options.dragImage, this.options.dragImagePos.x, this.options.dragImagePos.y );
+			if (this.options.dragImage && DragDropStore.transfer.setDragImage) {
+			  DragDropStore.transfer.setDragImage(this.options.dragImage, this.options.dragImagePos.x, this.options.dragImagePos.y);
 			}
-			
-			DragDropData[ id ] = opts.data;
-			DragSource[id] 	   = this.el;
 
-			this.$el.trigger('dd-dragstart.'+id, [DragDropData[id], dt]);
+			this.$el.trigger('dd-dragstart.'+id, [id, DragDropStore.transfer]);
 		},
 
-		onDragEnd: function( event ) { 
+		onDragEnd: function(event) { 
+		  var id = this.options.id;
 			this.$el.removeClass("drag-start");
-			var dt = getDtaTransfer(event);
-			var id = dt.getData("text");
-			this.$el.trigger('dd-dragend.'+id, [DragDropData[id], dt]);
+			this.$el.trigger('dd-dragend.'+id, [DragDropStore.data, DragDropStore.transfer]);
 		},
 
-		data: function( info ) {
-			if( !info ) {
-				return DragDropData[this.options.id];
+		data: function(info) {
+			if (!info) {
+				return DragDropStore.data;
 			}
-			DragDropData[this.options.id] = info;
+			DragDropStore.data = info;
 		}
 	};
 
@@ -98,29 +106,25 @@
 	Droppable.prototype = {
 		constructor: Droppable,
 
-		onDragOver: function ( event ) {
-			var dt = getDtaTransfer(event);
-			var id = dt.getData("text");
-
+		onDragOver: function ( event) {
+			var id = DragDropStore.id;
 			// Do not allow to drop on itself
-			if( this.dragPrevented || DragSource[id]===this.el ) {
+			if( this.dragPrevented || DragDropStore.source===this.el ) {
 				return true;
 			}
 
 			// Necessary. Allows us to drop
 			event.preventDefault();
 
-			this.$el.trigger("dd-dragover."+id, [DragDropData[id], dt]);
+			this.$el.trigger("dd-dragover."+id, [DragDropStore.data, DragDropStore.transfer]);
 
 			return false;
 		},
 
 		onDragEnter: function ( event ) {
-			var dt = getDtaTransfer(event);
-			var id = dt.getData("text");
-
+			var id = DragDropStore.id;
 			// Do not allow to drop on itself
-			if( DragSource[id]===this.el ) {
+			if( id==="" || DragDropStore.source===this.el ) {
 				return true;
 			}
 
@@ -131,24 +135,22 @@
 
 			// verify exclusions
 			var accepts = this.options.accepts;
-			if( accepts && !$(DragSource[id]).is( accepts ) ) {
+			if( accepts && !$(DragDropStore.source).is( accepts ) ) {
 				this.dragPrevented = true;
 				return true;
 			}
 
 			this.$el
 				.addClass("drag-over")
-				.trigger("dd-dragenter."+id, [DragDropData[id], dt]);
+				.trigger("dd-dragenter."+id, [DragDropStore.data, DragDropStore.transfer]);
 
 			return false;
 		},
 
 		onDragLeave: function ( event ) {
-			var dt = getDtaTransfer(event);
-			var id = dt.getData("text");
-
+			var id = DragDropStore.id;
 			// Do not allow to drop on itself
-			if( DragSource[id]===this.el ) {
+			if( DragDropStore.source===this.el ) {
 				return;
 			}
 
@@ -166,13 +168,11 @@
 
 			this.$el
 				.removeClass("drag-over")
-				.trigger("dd-dragleave."+id, [DragDropData[id], dt]);
+				.trigger("dd-dragleave."+id, [DragDropStore.data, DragDropStore.transfer]);
 		},
 
 		onDrop: function ( event ) {
-			var dt = getDtaTransfer(event);
-			var id = dt.getData("text");
-
+			var id = DragDropStore.id;
 			// Stops some browsers from redirecting.
 			event.stopPropagation();
 
@@ -184,13 +184,13 @@
 			}
 
 			// Do not allow to drop on itself
-			if( DragSource[id]===this.el ) {
+			if( DragDropStore.source===this.el ) {
 				return false;
 			}
 
 			this.$el
 				.removeClass("drag-over")
-				.trigger("dd-drop."+id, [DragDropData[id], DragSource[id], dt]);
+				.trigger("dd-drop."+id, [DragDropStore.data, DragDropStore.source, DragDropStore.transfer]);
 
 			return false;
 		}

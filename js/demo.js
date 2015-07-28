@@ -269,11 +269,11 @@ var Playlist = Backbone.View.extend({
 		this.$el.html( html );
 
 		this.$(".track").not("last").draggable({
-			id: 	"track",
+			id: "track",
 		});
 		this.$(".track").droppable({
-			id: 		"track",
-			accepts:	".track"
+			id: "track",
+			accepts: ".track"
 		});
 		this.$(".track").eq( this.player.trackIndex ).addClass("current");
 	},
