@@ -1,66 +1,201 @@
 <!DOCTYPE html>
 <html>
+ <head> 
+  <meta charset="utf-8" /> 
+  <meta http-equiv="X-UA-Compatible" content="chrome=1" /> 
+  <meta name="description" content="Devderby-jan-2013 : My entry to the Mozilla Devderby for Drag and Drop in January 2013" /> 
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Devderby-jan-2013 : My entry to the Mozilla Devderby for Drag and Drop in January 2013" />
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Devderby-jan-2013</title>
-  </head>
-
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/jvitela/devderby-jan-2013">View on GitHub</a>
-
-          <h1 id="project_title">Devderby-jan-2013</h1>
-          <h2 id="project_tagline">My entry to the Mozilla Devderby for Drag and Drop in January 2013</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/jvitela/devderby-jan-2013/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/jvitela/devderby-jan-2013/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1>
-<a name="classical-music-jukebox" class="anchor" href="#classical-music-jukebox"><span class="octicon octicon-link"></span></a>Classical Music Jukebox</h1>
-
-<p>My entry to the Mozilla Devderby for January 2013</p>
-
+  <link href='//fonts.googleapis.com/css?family=Gentium+Basic:700italic' rel='stylesheet' type='text/css'>  
+  <link href="css/stylesheet.css" type="text/css" rel="stylesheet" media="screen"/> 
+  <link href="css/playground.css" type="text/css" rel="stylesheet" /> 
+  <link href="css/dragdrop.css"   type="text/css" rel="stylesheet" />
+   
+  <title>Devderby-jan-2013</title> 
+ </head> 
+ <body> 
+  <!-- HEADER --> 
+  <div id="header_wrap" class="outer"> 
+   <header class="inner"> 
+    <a id="forkme_banner" href="https://github.com/jvitela/devderby-jan-2013">View on GitHub</a> 
+    <h1 id="project_title">
+      Classical Music Jukebox
+      <p><small id="project_tagline">My entry to the Mozilla Devderby for Drag and Drop in January 2013</small></p>
+    </h1> 
+    <section id="downloads"> 
+     <a class="zip_download_link" href="https://github.com/jvitela/devderby-jan-2013/zipball/master">Download this project as a .zip file</a> 
+     <a class="tar_download_link" href="https://github.com/jvitela/devderby-jan-2013/tarball/master">Download this project as a tar.gz file</a> 
+    </section> 
+   </header> 
+  </div> 
+  <!-- MAIN CONTENT --> 
+  <div class="outer container-fluid"> 
+    <!--
 <p><a href="https://developer.mozilla.org/es/demos/detail/classical-music-jukebox/launch">Launch the demo</a>
 <img src="https://developer.cdn.mozilla.net/media/uploads/demos/j/v/jvitela/8ca8f4c2857132f3bbd88077cec96a41/1359577501_screenshot_1.png" alt="Music Jukebox"></p>
-
-<p>This application is a music jukebox containing classical music records,
-you can listen to compositions of famous composers like Beethoven, Vivaldi, Mozart and Chopin.</p>
-
-<p>Developed using Twitter Bootstrap for layout and styling,
-Backbone, Underscore and Mustache for Javascript interactions.
-Audio link sources are from the Wikipedia.</p>
-
-<p>Audio works only for browsers supporting OGG audio format and the audio tag</p>
-
-<p><strong>Build to work with the native Drag and Drop API from HTML5</strong></p>
-      </section>
+--> 
+   <div id="intro" class="well"> 
+    <p>This application is a music jukebox containing classical music records, you can listen to compositions of famous composers like Beethoven, Vivaldi, Mozart and Chopin.</p> 
+    <p>Developed using Twitter Bootstrap for layout and styling, Backbone, Underscore and Mustache for Javascript interactions. Audio link sources are from the Wikipedia.</p> 
+    <p>Audio works only for browsers supporting OGG audio format and the audio tag</p> 
+    <p><strong>Build to work with the native Drag and Drop API from HTML5</strong></p> 
+   </div>
+   <!-- well --> 
+   <section id="main_content" class="inner-x"> 
+    <div class="container-demo"> 
+     <div id="alerts-container"></div> 
+     <div class="row-fluid"> 
+      <div class="span9" id="left-area"> 
+       <section id="music-player" class=""> 
+        <div class="drop-zone row-fluid"> 
+         <div class="span6"> 
+          <div class="popover left info"> 
+           <div class="arrow"></div> 
+           <h1 class="popover-title">Music Player</h1> 
+           <div class="popover-content"> 
+            <p>Take an album from the right column and drop it here.</p> 
+           </div> 
+          </div> 
+         </div> 
+         <div class="span6 gramophone">
+           &nbsp; 
+         </div> 
+        </div> 
+        <a href="#" class="playing-album"></a> 
+        <a href="#help01" data-for="help01" class="help btn btn-small"><i class="icon-question-sign"></i></a> 
+        <div id="help01"> 
+         <ol> 
+          <li> Drag an album from the right column to the disc player to play its contents. </li> 
+          <li> Drag the playing album back to the right column to return it. </li> 
+          <li> After an album is set to play, you can also use drag &amp; drop any track from the list to its playing order. </li> 
+         </ol> 
+        </div> 
+       </section> 
+       <section id="music-playlist"> 
+       </section> 
+      </div> 
+      <div class="span2 offset1" id="right-area"> 
+       <div id="music-catalog" class="albums-container"> 
+       </div> 
+      </div> 
+     </div> 
     </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Devderby-jan-2013 maintained by <a href="https://github.com/jvitela">jvitela</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
+    <!-- bootstrap container --> 
+    <!--  
+      Templates
+     --> 
+    <script type="text/mustache" id="album-template">
+  <div class="album-ghost"></div>
+  <div class="album-contents">
+    <img src="{{img}}" alt="{{autor}}"  class="img-polaroid cover" border="0"/>
+    <p>
+      <span class="autor">{{autor}}</span><br>
+      <small class="numtracks">{{tracks.length}} songs</small>
+    </p>
+  </div>
+  </script> 
+    <script type="text/mustache" id="play-template">
+    <div class="row-fluid">
+      <div class="span6">
+        <div class="popover left info">
+          <div class="arrow"></div>
+          <h1 class="popover-title">{{autor}}</h1>
+          <div class="popover-content">
+            <div class="row-fluid">
+              <div class="span6 cover">
+                <img src="{{img}}" alt="{{autor}}" border="0" class="img-polaroid"/>
+                <div class="btn-group controls"></div>
+              </div>
+              <div class="span6">
+              {{#tracks}}
+                <strong> {{name}}</strong><br>
+                By:
+                {{^link}}
+                  {{performer}}<br>
+                {{/link}}
+                {{#link}}
+                  <a href="{{link}}" target="_blank">{{performer}}</a><br>
+                {{/link}}
+                
+                <span class="time" style="display:none;">
+                Time: <span class="currentTime"></span> (<span class="duration"></span>) 
+                </span>
+                
+                <span class="loading">
+                  Loading...
+                </span>
+              {{/tracks}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="span6 gramophone">
+        &nbsp;
+      </div> 
     </div>
-
-    
-
-  </body>
+  </script> 
+    <script type="text/mustache" id="controls-template">
+    <button class="btn btn-small back" {{^prev}}disabled="disabled"{{/prev}} title="Previous Track">
+      <i class="icon-step-backward"></i>
+    </button>
+    <button class="btn btn-small play" title="Play Track">
+      {{#paused}}
+      <i class="icon-play"></i>
+      {{/paused}}
+      {{^paused}}
+      <i class="icon-pause"></i>
+      {{/paused}}
+    </button>
+    <button class="btn btn-small stop" {{#paused}}disabled="disabled"{{/paused}} title="Stop Playing">
+      <i class="icon-stop"></i>
+    </button>
+    <button class="btn btn-small frwd" {{^next}}disabled="disabled"{{/next}} title="Next Track">
+      <i class="icon-step-forward"></i>
+    </button>
+  </script> 
+    <script type="text/mustache" id="audio-template">
+    <audio autoplay="autoplay" class="hiden-audio">
+      <source src="{{src}}" type="audio/{{type}}" />
+      Your browser does not support the audio element.
+    </audio>
+  </script> 
+    <script type="text/mustache" id="tracks-template">
+    {{#.}}
+    <a href="#track/{{index}}" data-index="{{index}}" class="track">
+      <div class="row-fluid">
+        <div class="span1">
+          <button class="btn btn-mini play">
+            <i class="icon-play"></i>
+          </button>
+          <i class="icon-volume-up"></i>
+        </div>
+        <div class="span6">{{name}}</div>
+        <div class="span5">{{performer}}</div>
+      </div>
+    </a>
+    {{/.}}
+    <div class="track last">&nbsp;</div>
+  </script> 
+   </section> 
+  </div>
+  <!-- container --> 
+  <!-- FOOTER  --> 
+  <div id="footer_wrap" class="outer"> 
+   <footer class="inner"> 
+    <p class="copyright">Devderby-jan-2013 maintained by <a href="https://github.com/jvitela">jvitela</a></p> 
+    <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p> 
+   </footer> 
+  </div> 
+  <!-- Javascript
+         Placed at the end of the document so the pages load faster 
+    --> 
+  <script src="js/lib/jquery.min.js" type="text/javascript"></script> 
+  <script src="js/lib/underscore.min.js" type="text/javascript"></script> 
+  <script src="js/lib/backbone.min.js" type="text/javascript"></script> 
+  <script src="js/lib/mustache.min.js" type="text/javascript"></script> 
+  <script src="js/lib/bootstrap.min.js" type="text/javascript"></script> 
+  <script src="js/albums.js" type="text/javascript"></script> 
+  <script src="js/dragdrop.js" type="text/javascript"></script> 
+  <script src="js/demo.js" type="text/javascript"></script>  
+ </body>
 </html>
